@@ -1,24 +1,26 @@
-apiVersion: apps/v1
-kind: Deployment
+from flask import Flask, jsonify
 
-metadata:
-  name: myapp
+app = Flask(__name__)
 
-spec:
-  replicas: 1
+@app.route("/")
+def home():
+    return "Hello from Sayali Flask App 🚀"
 
-  selector:
-    matchLabels:
-      app: myapp
+@app.route("/health")
+def health():
+    return jsonify({
+        "status": "healthy",
+        "app": "sayali-flask-app"
+    })
 
-  template:
-    metadata:
-      labels:
-        app: myapp
+@app.route("/api/data")
+def data():
+    return jsonify({
+        "name": "Sayali App",
+        "type": "Flask API",
+        "message": "Running successfully on container 🚀"
+    })
 
-    spec:
-      containers:
-      - name: mycontainer
-        image: madneprerna/myimage:latest
-        ports:
-        - containerPort: 80
+if __name__ == "__main__":
+    # IMPORTANT: required for containers (Kubernetes / Cloud Run)
+    app.run(host="0.0.0.0", port=8080)
